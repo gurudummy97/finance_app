@@ -68,16 +68,9 @@ elif menu == "Add Entry":
                 "Type": type_,
                 "Description": desc
             }
-            # Use pd.concat instead of deprecated _append
-            df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+           df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)Add commentMore actions
             df.to_csv("data.csv", index=False)
-
-            # ✅ Reload and reprocess data immediately
-            df = pd.read_csv("data.csv")
-            df = preprocess_data(df)
-
-            st.success("Entry added successfully! Dashboard will now reflect this.")
-
+            st.success("Entry added successfully!")
 # ...existing code...
 
 # Forecast
