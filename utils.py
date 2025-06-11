@@ -4,8 +4,9 @@ import numpy as np
 import datetime
 
 def preprocess_data(df):
-    df['Date'] = pd.to_datetime(df['Date'])
-    df['Month'] = df['Date'].dt.to_period('M')
+    df['Date'] = pd.to_datetime(df['Date'], errors='coerce')  # handles bad dates
+    df.dropna(subset=['Date'], inplace=True)  # drops rows with invalid dates
+    df['Month'] = df['Date'].dt.to_period('M').astype(str)
     return df
 
 def forecast_expense(df):
