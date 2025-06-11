@@ -22,22 +22,23 @@ if menu == "Dashboard":
 
     col1, col2 = st.columns(2)
     with col1:
-    st.subheader("Monthly Expenses")
- 
-    if not exp.empty:
-        monthly_exp = exp.groupby('Month')['Amount'].sum().reset_index()
-        monthly_exp['Month'] = monthly_exp['Month'].astype(str)  # convert Period to str
- 
-fig = px.bar(monthly_exp, x='Month', y='Amount', title="Expenses per Month")
-        st.plotly_chart(fig, use_container_width=True)
-    else:
-        st.warning("No expense data available to display.")
+        st.subheader("Monthly Expenses")
+        if not exp.empty:
+            monthly_exp = exp.groupby('Month')['Amount'].sum().reset_index()
+            monthly_exp['Month'] = monthly_exp['Month'].astype(str)  # convert Period to str
+            fig = px.bar(monthly_exp, x='Month', y='Amount', title="Expenses per Month")
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.warning("No expense data available to display.")
 
     with col2:
         st.subheader("Expense Breakdown")
-        pie = exp.groupby('Category')['Amount'].sum().reset_index()
-        fig2 = px.pie(pie, names='Category', values='Amount', title="By Category")
-        st.plotly_chart(fig2, use_container_width=True)
+        if not exp.empty:
+            pie = exp.groupby('Category')['Amount'].sum().reset_index()
+            fig2 = px.pie(pie, names='Category', values='Amount', title="By Category")
+            st.plotly_chart(fig2, use_container_width=True)
+        else:
+            st.warning("No expense data available to display.")
 
 # Add Entry
 elif menu == "Add Entry":
@@ -51,7 +52,7 @@ elif menu == "Add Entry":
         submitted = st.form_submit_button("Add")
         if submitted:
             new_row = {"Date": date, "Category": category, "Amount": amount, "Type": type_, "Description": desc}
-            df = df._append(new_row, ignore_index=True)
+            df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
             df.to_csv("data.csv", index=False)
             st.success("Entry added successfully!")
 
