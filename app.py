@@ -61,22 +61,24 @@ elif menu == "Add Entry":
         desc = st.text_input("Description")
         submitted = st.form_submit_button("Add")
         if submitted:
-        new_row = {
-        "Date": pd.to_datetime(str(date)).strftime("%Y-%m-%d"),
-        "Category": category,
-        "Amount": amount,
-        "Type": type_,
-        "Description": desc
-        }
- 
-        df = df._append(new_row, ignore_index=True)
-        df.to_csv("data.csv", index=False)
- 
-        # ✅ Reload and reprocess data immediately
-        df = pd.read_csv("data.csv")
-        df = preprocess_data(df)
- 
-        st.success("Entry added successfully! Dashboard will now reflect this.")
+            new_row = {
+                "Date": pd.to_datetime(str(date)).strftime("%Y-%m-%d"),
+                "Category": category,
+                "Amount": amount,
+                "Type": type_,
+                "Description": desc
+            }
+            # Use pd.concat instead of deprecated _append
+            df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+            df.to_csv("data.csv", index=False)
+
+            # ✅ Reload and reprocess data immediately
+            df = pd.read_csv("data.csv")
+            df = preprocess_data(df)
+
+            st.success("Entry added successfully! Dashboard will now reflect this.")
+
+# ...existing code...
 
 # Forecast
 elif menu == "Forecast":
