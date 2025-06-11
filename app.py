@@ -62,18 +62,23 @@ elif menu == "Add Entry":
         submitted = st.form_submit_button("Add")
         if submitted:
             new_row = {
-                "Date": pd.to_datetime(str(date)).strftime("%Y-%m-%d"),
-                "Category": category,
-                "Amount": amount,
-                "Type": type_,
-                "Description": desc
+            "Date": pd.to_datetime(str(date)).strftime("%Y-%m-%d"),
+            "Category": category,
+            "Amount": amount,
+            "Type": type_,
+            "Description": desc
             }
-            df = pd._append(new_row, ignore_index=True)
+ 
+    # ✅ Proper way to add new row
+            new_row_df = pd.DataFrame([new_row])
+            df = pd.concat([df, new_row_df], ignore_index=True)
             df.to_csv("data.csv", index=False)
-            # Load data
+ 
+    # ✅ Reload updated data
             df = pd.read_csv("data.csv")
             df = preprocess_data(df)
-            st.success("Entry added successfully!")
+ 
+            st.success("Entry added and dashboard updated!")
 # ...existing code...
 
 # Forecast
