@@ -73,10 +73,10 @@ elif menu == "Add Entry":
             new_row_df = pd.DataFrame([new_row])
             df = pd.concat([df, new_row_df], ignore_index=True)
             df.to_csv("data.csv", index=False)
- 
+             if 'df' not in st.session_state:st.session_state.df = preprocess_data(pd.read_csv("data.csv"))
     # ✅ Reload updated data
-            df = pd.read_csv("data.csv")
-            df = preprocess_data(df)
+            #df = pd.read_csv("data.csv")
+            #df = preprocess_data(df)
  
             st.success("Entry added and dashboard updated!")
 # ...existing code...
