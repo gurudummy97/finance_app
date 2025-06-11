@@ -22,10 +22,16 @@ if menu == "Dashboard":
 
     col1, col2 = st.columns(2)
     with col1:
-        st.subheader("Monthly Expenses")
+    st.subheader("Monthly Expenses")
+ 
+    if not exp.empty:
         monthly_exp = exp.groupby('Month')['Amount'].sum().reset_index()
-        fig = px.bar(monthly_exp, x='Month', y='Amount', title="Expenses per Month")
+        monthly_exp['Month'] = monthly_exp['Month'].astype(str)  # convert Period to str
+ 
+fig = px.bar(monthly_exp, x='Month', y='Amount', title="Expenses per Month")
         st.plotly_chart(fig, use_container_width=True)
+    else:
+        st.warning("No expense data available to display.")
 
     with col2:
         st.subheader("Expense Breakdown")
