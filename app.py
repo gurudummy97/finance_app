@@ -68,8 +68,11 @@ elif menu == "Add Entry":
                 "Type": type_,
                 "Description": desc
             }
-           df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)Add commentMore actions
+            df = pd._append(new_row, ignore_index=True)
             df.to_csv("data.csv", index=False)
+            # Load data
+            df = pd.read_csv("data.csv")
+            df = preprocess_data(df)
             st.success("Entry added successfully!")
 # ...existing code...
 
