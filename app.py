@@ -15,17 +15,25 @@ df = preprocess_data(df)
 menu = st.sidebar.radio("Navigate", ["Dashboard", "Add Entry", "Forecast", "Goals", "Suggestions"])
 
 # Dashboard
+# ...existing code...
+
+# Dashboard
 if menu == "Dashboard":
     st.header("📊 Expense Overview")
     exp = df[df['Type'] == 'Expense']
     income = df[df['Type'] == 'Income']
 
+    # Ensure 'Date' is datetime and 'Month' exists
+    if 'Date' in df.columns:
+        df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
+        df['Month'] = df['Date'].dt.to_period('M').astype(str)
+
     col1, col2 = st.columns(2)
     with col1:
         st.subheader("Monthly Expenses")
         if not exp.empty:
+            exp['Month'] = exp['Date'].dt.to_period('M').astype(str)
             monthly_exp = exp.groupby('Month')['Amount'].sum().reset_index()
-            monthly_exp['Month'] = monthly_exp['Month'].astype(str)  # convert Period to str
             fig = px.bar(monthly_exp, x='Month', y='Amount', title="Expenses per Month")
             st.plotly_chart(fig, use_container_width=True)
         else:
@@ -40,6 +48,8 @@ if menu == "Dashboard":
         else:
             st.warning("No expense data available to display.")
 
+# ...existing code...
+
 # Add Entry
 elif menu == "Add Entry":
     st.header("➕ Add New Entry")
@@ -51,7 +61,13 @@ elif menu == "Add Entry":
         desc = st.text_input("Description")
         submitted = st.form_submit_button("Add")
         if submitted:
-            new_row = {"Date": date, "Category": category, "Amount": amount, "Type": type_, "Description": desc}
+            new_row = {
+    "Date": pd.to_datetime(str(date)).strftime("%Y-%m-%d"),
+    "Category": category,
+    "Amount": amount,
+    "Type": type_,
+    "Description": desc
+}
             df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
             df.to_csv("data.csv", index=False)
             st.success("Entry added successfully!")
